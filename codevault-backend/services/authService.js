@@ -51,4 +51,59 @@ const login = async({email, password}) => {
     }
 };
 
+const getMe = async( id ) => {
+    try {
+        if (!id) {
+            throw new Error("ID is required");
+        }
 
+        const user = await User.findById(id);
+        if (!user) {
+            throw new Error("User not found");
+        }
+        return{
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            createdAt: user.createdAt
+        };
+
+    } catch (error) {
+        throw error;
+    }
+};
+
+const editUser = async({ id, name, email }) => {
+    try {
+        if (!id) {
+            throw new Error("ID is required");
+        }
+        const user = await User.findById(id);
+        if(!user){
+            throw new Error("User not found");
+        }
+
+        user.name = name || user.name;
+        user.email = email || user.email;
+
+
+        const updatedUser = await user.save();
+
+        return{
+            id: updatedUser._id,
+            name:updatedUser.name,
+            email:updatedUser.email,
+            updatedAt: updatedUser.updatedAt
+        };
+
+    } catch (error) {
+        throw error;
+    }
+};
+
+module.exports = {
+    register,
+    login,
+    getMe,
+    editUser
+};
