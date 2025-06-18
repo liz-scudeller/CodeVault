@@ -44,13 +44,55 @@ const editUser = async ( req, res ) => {
         res.status(200).json(updatedUser);
 
     } catch (error) {
-        res.status(400).json({ messa:error.message });
+        res.status(400).json({ message:error.message });
     }
 }; 
+
+const changePassword = async ( req, res ) => {
+
+    try {
+        const id = req.user.id;
+        const { currentPassword, newPassword} = req.body;
+    
+        const updatePassword = await authService.changePassword({ id, currentPassword, newPassword });
+        res.status(200).json(updatePassword);
+        
+    } catch (error) {
+        res.status(400).json({ message:error.message });
+    }
+};
+
+const uploadAvatar = async ( req, res ) => {
+try {
+    const id = req.user.id;
+    const avatarUrl = req.file.path;
+
+    const updateAvatar = await authService.updateAvatar({ id, avatarUrl });
+    res.status(200).json(updateAvatar);
+
+} catch (error) {
+    res.status(400).json({ message: error.message });
+}
+};
+
+const deleteUser = async ( req, res ) => {
+    try {
+        const id = req.user.id;
+
+        const deleteUser = await authService.deleteUser(id);
+        res.status(200).json(deleteUser);
+
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
 
 module.exports = {
     loginUser,
     registerUser,
     getMe,
-    editUser
+    editUser,
+    changePassword,
+    uploadAvatar,
+    deleteUser
 }

@@ -37,8 +37,27 @@ const updateUserValidation = [
     .isEmail().withMessage('Must be a valid email')
 ];
 
+const changePasswordValidation = [
+    check('currentPassword')
+    .notEmpty().withMessage('Current password required'),
+
+    check('newPassword')
+    .notEmpty().withMessage('New password is required')
+    .isLength({ min: 6 }).withMessage('New password must be at least 6 characters'),
+    
+    check('confirmPassword')
+    .notEmpty().withMessage('Confirm password is required')
+    .custom((value, { req }) => {
+    if (value !== req.body.newPassword) {
+      throw new Error('Passwords do not match');
+    }
+    return true;
+  })
+];
+
 module.exports = {
     registerValidation,
     loginValidation,
-    updateUserValidation
+    updateUserValidation,
+    changePasswordValidation
 };

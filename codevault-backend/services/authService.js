@@ -101,9 +101,80 @@ const editUser = async({ id, name, email }) => {
     }
 };
 
+const changePassword = async ({id, currentPassword, newPassword }) => {
+    try {
+        if(!id){
+            throw new Error("ID is required");
+        }
+        const user = await User.findById(id);
+        if(!user){
+            throw new Error("User not found");        
+        }
+        const passwordMatch = await bcrypt.compare(currentPassword , user.password);
+
+        if(!passwordMatch){
+            throw new Error("Current password is incorrect");
+        }
+        const hashedPassword = await bcrypt.hash( newPassword, 10 );
+        user.password = hashedPassword;
+
+        await user.save();
+
+        return{
+            message:'Password updated successfully'
+        };
+
+    } catch (error) {
+        throw error;
+        
+    }
+};
+
+const updateAvatar = async ({ id, avatarUrl }) => {
+    try {
+        const user = await User.findById(id);
+        if (!user) {
+            throw new Error("User not found");
+        }
+
+        user.avatarUrl = avatarUrl;
+        await user.save();
+
+        return{
+            message: ' Avatar updated successfully ',
+            avatarUrl
+        };
+    } catch (error) {
+        throw error;
+    }
+};
+
+const deleteUser = async (id) => {
+    try {
+        if(!id){
+            throw new Error('ID is required');
+        }
+        const user = await User.findById(id);
+        if (!user) {
+            throw new Error("User not found");
+        }
+
+        await User.findByIdAndDelete(id);
+
+        return{
+            message: 'User deleted successfully'
+        };
+
+    } catch (error) {
+        throw error;
+    }
+};
 module.exports = {
     register,
     login,
     getMe,
-    editUser
+    editUser,
+    changePassword,
+    updateAvatar,
+    deleteUser
 };
