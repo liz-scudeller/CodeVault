@@ -16,13 +16,13 @@ const register = async ({name, email, password}) =>{
         password: hashedPassword,
     });
     return {
-        message: 'User registered successfuly',
+        message: 'User registered successfully',
         user: {
             id: newUser._id,
             name: newUser.name,
             email: newUser.email,
         }
-    }
+    };
 }
 catch(error){
     throw error;
